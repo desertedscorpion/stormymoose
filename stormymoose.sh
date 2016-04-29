@@ -9,4 +9,10 @@ chown jenkins:jenkins /var/lib/jenkins/credentials.xml &&
     chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa &&
     chmod 0600 /var/lib/jenkins/.ssh/id_rsa &&
     echo $(netstat -nr | grep "^0\.0\.0\.0" | awk '{print $2}') dockerhost >> /etc/hosts &&
+    CLASSPATH=/usr/share/jenkins/webroot/WEB-INF/jenkins-cli.jar:/usr/share/jenkins/webroot/WEB-INF/remoting.jar:/usr/local/lib/commons-codec-1.6.jar &&
+    for FILE in /usr/local/lib/slaves/*
+    do
+	java hudson.cli.CLI -s http://127.0.0.1:8080 add-node ${FILE} &&
+	    true
+    done &&
     true
