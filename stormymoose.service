@@ -1,0 +1,8 @@
+[Unit]
+Description=stormymoose jenkins configuration
+
+[Service]
+ExecStart=/usr/local/sbin/stormymoose
+
+[Install]
+WantedBy=multi-user.target
