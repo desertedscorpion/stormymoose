@@ -21,16 +21,16 @@ chown jenkins:jenkins /var/lib/jenkins/credentials.xml &&
 	(grep dockerhost /etc/hosts && sed -i "s#^.*\s*dockerhost\$#${DOCKERHOST}\tlocalhost.localdomain localhost#" /etc/hosts ) ||
 	    echo -e ${DOCKERHOST}\tdockerhost >> /etc/hosts
     ) &&
-    CLASSPATH=/usr/share/jenkins/webroot/WEB-INF/jenkins-cli.jar:/usr/share/jenkins/webroot/WEB-INF/remoting.jar:/usr/local/lib/commons-codec-1.6.jar &&
+    export CLASSPATH=/usr/share/jenkins/webroot/WEB-INF/jenkins-cli.jar:/usr/share/jenkins/webroot/WEB-INF/remoting.jar:/usr/local/lib/commons-codec-1.6.jar &&
     for FILE in /usr/local/lib/slaves/*
-    do
-	java hudson.cli.CLI -s http://127.0.0.1:8080 add-node ${FILE} &&
+    do	
+	cat ${FILE} | java hudson.cli.CLI -s http://127.0.0.1:8080 create-node $(basename ${FILE%.*}) &&
 	    sleep 10s &&
 	    true
     done &&
     for FILE in /usr/local/lib/jobs/*
     do
-	java hudson.cli.CLI -s http://127.0.0.1:8080 add-job ${FILE} &&
+	cat ${FILE} | java hudson.cli.CLI -s http://127.0.0.1:8080 create-job $(basename ${FILE%.*}) &&
 	    sleep 10s &&
 	    true
     done &&
