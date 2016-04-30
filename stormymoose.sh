@@ -9,7 +9,7 @@ chown jenkins:jenkins /var/lib/jenkins/credentials.xml &&
 	    chmod 0700 /var/lib/jenkins/.ssh &&
 	    true
     fi &&
-    if [ -f /var/lib/jenkins/.ssh/id_rsa ]
+    if [ ! -f /var/lib/jenkins/.ssh/id_rsa ]
     then
 	cp /var/private/id_rsa /var/lib/jenkins/.ssh &&
 	    chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa &&
@@ -18,12 +18,12 @@ chown jenkins:jenkins /var/lib/jenkins/credentials.xml &&
     fi &&
     DOCKERHOST=$(netstat -nr | grep "^0\.0\.0\.0" | awk '{print $2}') &&
     (
-	(grep dockerhost /etc/hosts && sed -i "s#^.*\s*dockerhost\$#${DOCKERHOST}\tdockerhost#" /etc/hosts ) ||
+	(grep dockerhost /etc/hosts && sed -i.bak "s#^.*\s*dockerhost\$#${DOCKERHOST}\tdockerhost#" /etc/hosts ) ||
 	    echo -e "${DOCKERHOST}\tdockerhost" >> /etc/hosts
     ) &&
     export CLASSPATH=/usr/share/jenkins/webroot/WEB-INF/jenkins-cli.jar:/usr/share/jenkins/webroot/WEB-INF/remoting.jar:/usr/local/lib/commons-codec-1.6.jar &&
     for FILE in /usr/local/lib/slaves/*
-    do	
+    do
 	cat ${FILE} | java hudson.cli.CLI -s http://127.0.0.1:8080 create-node $(basename ${FILE%.*}) &&
 	    sleep 10s &&
 	    true
