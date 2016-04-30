@@ -18,8 +18,8 @@ chown jenkins:jenkins /var/lib/jenkins/credentials.xml &&
     fi &&
     DOCKERHOST=$(netstat -nr | grep "^0\.0\.0\.0" | awk '{print $2}') &&
     (
-	(grep dockerhost /etc/hosts && sed -i "s#^.*\s*dockerhost\$#${DOCKERHOST}\tlocalhost.localdomain localhost#" /etc/hosts ) ||
-	    echo -e ${DOCKERHOST}\tdockerhost >> /etc/hosts
+	(grep dockerhost /etc/hosts && sed -i "s#^.*\s*dockerhost\$#${DOCKERHOST}\tdockerhost#" /etc/hosts ) ||
+	    echo -e "${DOCKERHOST}\tdockerhost" >> /etc/hosts
     ) &&
     export CLASSPATH=/usr/share/jenkins/webroot/WEB-INF/jenkins-cli.jar:/usr/share/jenkins/webroot/WEB-INF/remoting.jar:/usr/local/lib/commons-codec-1.6.jar &&
     for FILE in /usr/local/lib/slaves/*
